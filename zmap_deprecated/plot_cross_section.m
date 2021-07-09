@@ -81,54 +81,54 @@ end
 function create_my_menu(c2)
         add_menu_divider();
         options = uimenu('Label','Select');
-        %uimenu(options,'Label','Select EQ inside Polygon ',MenuSelectedField(),@cb_select_eq_inside_poly);
-        %uimenu(options,'Label','Refresh ',MenuSelectedField(),@cb_refresh2);
+        %uimenu(options,'Label','Select EQ inside Polygon ','MenuSelectedFcn',@cb_select_eq_inside_poly);
+        %uimenu(options,'Label','Refresh ','MenuSelectedFcn',@cb_refresh2);
         
         options = uimenu('Label','Ztools');
         
         
         uimenu(options,'Label', 'differential b ',...
-            MenuSelectedField(),@cb_diff_b);
+            'MenuSelectedFcn',@cb_diff_b);
         
         uimenu(options,'Label','Fractal Dimension',...
-            MenuSelectedField(),@(~,~)Dcross());
+            'MenuSelectedFcn',@(~,~)Dcross());
         
         uimenu(options,'Label','Mean Depth',...
-            MenuSelectedField(), @(~,~)cb_meandepth(c2));
+            'MenuSelectedFcn', @(~,~)cb_meandepth(c2));
         
         uimenu(options,'Label','z-value grid',...
-            MenuSelectedField(),@(~,~)magrcros());
+            'MenuSelectedFcn',@(~,~)magrcros());
         
         uimenu(options,'Label','b and Mc grid ',...
-            MenuSelectedField(),@(~,~)bcross('in'));
+            'MenuSelectedFcn',@(~,~)bcross('in'));
         
         uimenu(options,'Label','Prob. forecast test',...
-            MenuSelectedField(),@cb_probforecast_test);
+            'MenuSelectedFcn',@cb_probforecast_test);
         
         uimenu(options,'Label','beCubed',...
-            MenuSelectedField(),@cb_becubed);
+            'MenuSelectedFcn',@cb_becubed);
         
         uimenu(options,'Label','b diff (bootstrap)',...
-            MenuSelectedField(),@cb_b_diff_boot);
+            'MenuSelectedFcn',@cb_b_diff_boot);
         
         uimenu(options,'Label','Stress Variance',...
-            MenuSelectedField(),@(~,~)cross_stress());
+            'MenuSelectedFcn',@(~,~)cross_stress());
         
         
         uimenu(options,'Label','Time Plot ',...
-            MenuSelectedField(),@(~,~)timcplo(c2));
+            'MenuSelectedFcn',@(~,~)timcplo(c2));
         
         uimenu(options,'Label',' X + topo ',...
-            MenuSelectedField(),@(~,~)xsectopo());
+            'MenuSelectedFcn',@(~,~)xsectopo());
         
         uimenu(options,'Label','Vert. Exaggeration',...
-            MenuSelectedField(),@(~,~)vert_exaggeration());
+            'MenuSelectedFcn',@(~,~)vert_exaggeration());
         
         uimenu(options,'Label','Rate change grid',...
-            MenuSelectedField(),@(~,~)rc_cross_a2());
+            'MenuSelectedFcn',@(~,~)rc_cross_a2());
         
         uimenu(options,'Label','Omori parameter grid',...
-            MenuSelectedField(),@(~,~)calc_Omoricross()); % formerly pcross
+            'MenuSelectedFcn',@(~,~)calc_Omoricross()); % formerly pcross
         
     end
     

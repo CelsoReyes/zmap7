@@ -141,41 +141,41 @@ function view_ratecomp(det,valueMap)
         add_symbol_menu()
         
         options = uimenu('Label',' Select ');
-        uimenu(options,'Label','Refresh ',MenuSelectedField(),@callbackfun_001)
-        uimenu(options,'Label','Select EQ in Circle - const Ni',MenuSelectedField(),@callbackfun_002)
-        uimenu(options,'Label','Select EQ in Circle - const R2',MenuSelectedField(),@callbackfun_003)
+        uimenu(options,'Label','Refresh ','MenuSelectedFcn',@callbackfun_001)
+        uimenu(options,'Label','Select EQ in Circle - const Ni','MenuSelectedFcn',@callbackfun_002)
+        uimenu(options,'Label','Select EQ in Circle - const R2','MenuSelectedFcn',@callbackfun_003)
         
-        uimenu(options,'Label','Select EQ in Polygon ',MenuSelectedField(),@callbackfun_004)
+        uimenu(options,'Label','Select EQ in Polygon ','MenuSelectedFcn',@callbackfun_004)
         
         
         op1 = uimenu('Label',' Maps ');
         
-        uimenu(op1,'Label','z-value map ',MenuSelectedField(),@callbackfun_005) % ('z value',old) 'ast'
-        uimenu(op1,'Label','Percent change map',MenuSelectedField(),@callbackfun_006) % ('% change',per)
-        uimenu(op1,'Label','Beta value map',MenuSelectedField(),@callbackfun_007) % ('beta',beta_map) [sic]
+        uimenu(op1,'Label','z-value map ','MenuSelectedFcn',@callbackfun_005) % ('z value',old) 'ast'
+        uimenu(op1,'Label','Percent change map','MenuSelectedFcn',@callbackfun_006) % ('% change',per)
+        uimenu(op1,'Label','Beta value map','MenuSelectedFcn',@callbackfun_007) % ('beta',beta_map) [sic]
         
-        uimenu(op1,'Label','Significance based on beta map',MenuSelectedField(),@callbackfun_008) %('beta',betamap) [sic]
+        uimenu(op1,'Label','Significance based on beta map','MenuSelectedFcn',@callbackfun_008) %('beta',betamap) [sic]
         
         uimenu(op1,'Label','Resolution Map',...
-            MenuSelectedField(),@callbackfun_009) %('Radius [km]',reso);
+            'MenuSelectedFcn',@callbackfun_009) %('Radius [km]',reso);
         
         op1 = uimenu('Label','  Display ');
-        uimenu(op1,'Label','Plot Map in Lambert projection',MenuSelectedField(),@callbackfun_010)
-        uimenu(op1,'Label','Fix color (z) scale',MenuSelectedField(),@(~,~)fix_caxis(ZGvalueMap,'horz') )
+        uimenu(op1,'Label','Plot Map in Lambert projection','MenuSelectedFcn',@callbackfun_010)
+        uimenu(op1,'Label','Fix color (z) scale','MenuSelectedFcn',@(~,~)fix_caxis(ZGvalueMap,'horz') )
         uimenu(op1,'Label','Plot map on top of topography (white background)',...
-            MenuSelectedField(),@(~,~)dramap_z('dramap_z','w', valueMap))
+            'MenuSelectedFcn',@(~,~)dramap_z('dramap_z','w', valueMap))
         uimenu(op1,'Label','Plot map on top of topography (black background)',...
-            MenuSelectedField(),@(~,~)dramap_z('dramap_z','k', valueMap))
-        uimenu(op1,'Label','Histogram of map-values',MenuSelectedField(),@(~,~)zhist())
-        uimenu(op1,'Label','Colormap InvertGray',MenuSelectedField(),@callbackfun_015)
-        uimenu(op1,'Label','Colormap Invertjet',MenuSelectedField(), @(~,~) colormap( flipud(jet(64)) ));
+            'MenuSelectedFcn',@(~,~)dramap_z('dramap_z','k', valueMap))
+        uimenu(op1,'Label','Histogram of map-values','MenuSelectedFcn',@(~,~)zhist())
+        uimenu(op1,'Label','Colormap InvertGray','MenuSelectedFcn',@callbackfun_015)
+        uimenu(op1,'Label','Colormap Invertjet','MenuSelectedFcn', @(~,~) colormap( flipud(jet(64)) ));
         
-        uimenu(op1,'Label','shading flat',MenuSelectedField(), @(~,~)cb_shading('flat'))
-        uimenu(op1,'Label','shading interpolated',MenuSelectedField(), @(~,~)cb_shading('interp'))
-        uimenu(op1,'Label','Brigten +0.4',MenuSelectedField(), @(~,~)cb_brighten(0.4))
-        uimenu(op1,'Label','Brigten -0.4',MenuSelectedField(), @(~,~)cb_brighten(-0.4))
+        uimenu(op1,'Label','shading flat','MenuSelectedFcn', @(~,~)cb_shading('flat'))
+        uimenu(op1,'Label','shading interpolated','MenuSelectedFcn', @(~,~)cb_shading('interp'))
+        uimenu(op1,'Label','Brigten +0.4','MenuSelectedFcn', @(~,~)cb_brighten(0.4))
+        uimenu(op1,'Label','Brigten -0.4','MenuSelectedFcn', @(~,~)cb_brighten(-0.4))
         
-        uimenu(op1,'Label','Redraw overlay',MenuSelectedField(),@callbackfun_022)
+        uimenu(op1,'Label','Redraw overlay','MenuSelectedFcn',@callbackfun_022)
     end
     
     %% callback functions

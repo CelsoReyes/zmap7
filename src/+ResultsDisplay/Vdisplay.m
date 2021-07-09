@@ -165,7 +165,7 @@ classdef Vdisplay < ResultsDisplay.ZmapResultsPlugin
             update_layermenu(obj, colname, c);
             
             uimenu(c, 'Separator', 'on', 'Label', 'Close tab',...
-                MenuSelectedField(),@(~,~)delete(resTab));
+                'MenuSelectedFcn',@(~,~)delete(resTab));
             
             title(ax, sprintf('%s : [ %s ]', obj.Parent.RawCatalog.Name, coldesc), 'Interpreter', 'None');
             
@@ -555,7 +555,7 @@ classdef Vdisplay < ResultsDisplay.ZmapResultsPlugin
                         'Label', obj.Data.Properties.VariableDescriptions{i},...
                         'Tag', varName,...
                         'Enable', tf2onoff(hasValues(varName)),...
-                        MenuSelectedField(),@(~,~)obj.overlay_cb(varName, container));
+                        'MenuSelectedFcn',@(~,~)obj.overlay_cb(varName, container));
                 end
                 container.Children(end-1).Separator='on';
             end
@@ -749,21 +749,21 @@ classdef Vdisplay < ResultsDisplay.ZmapResultsPlugin
             for jj = 1:numel(shadingOptions)
                 
                 uimenu(shademenu, 'Label', shadingOptions(jj),...
-                    MenuSelectedField(),@(~,~)ZmapGridFunction.cb_shading(shadingOptions(jj)));
+                    'MenuSelectedFcn',@(~,~)ZmapGridFunction.cb_shading(shadingOptions(jj)));
             end
            
             
             uimenu(lookmenu, 'Separator', 'on',...
                 'Label', 'brighten active map',...
-                MenuSelectedField(),@(~,~)ZmapGridFunction.cb_brighten(0.4));
+                'MenuSelectedFcn',@(~,~)ZmapGridFunction.cb_brighten(0.4));
             uimenu(lookmenu, 'Label', 'darken active map',...
-                MenuSelectedField(),@(~,~)ZmapGridFunction.cb_brighten(-0.4));
+                'MenuSelectedFcn',@(~,~)ZmapGridFunction.cb_brighten(-0.4));
             
             uimenu(lookmenu, 'Separator', 'on',...
                 'Label', 'decrease transparency (alpha) ( +0.2 )',...
-                MenuSelectedField(), @(~,~)ZmapGridFunction.cb_alpha( 0.2));
+                'MenuSelectedFcn', @(~,~)ZmapGridFunction.cb_alpha( 0.2));
             uimenu(lookmenu, 'Label', 'increase transparency (alpha) ( -0.2 )',...
-                MenuSelectedField(), @(~,~)ZmapGridFunction.cb_alpha( - 0.2));
+                'MenuSelectedFcn', @(~,~)ZmapGridFunction.cb_alpha( - 0.2));
            
             % in the main plots, the object is stored in the UserData of each result's tab
 

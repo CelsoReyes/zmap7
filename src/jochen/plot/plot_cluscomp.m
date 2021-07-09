@@ -19,52 +19,50 @@ function [vMags, vClusTime, vDist]=plot_cluscomp(vmain, vcluster, mCatalog, nMet
     %
     % 28.08.02: Changed distance determination using distance now
     
-    error('Developer: plot_cluscomp Needs to be updated to handle new catalogs')
-    
-    mTmpCat = [vmain vcluster mCatalog];
+    % error('Developer: plot_cluscomp Needs to be updated to handle new catalogs')
+        
     % Select cluster
-    for nCevent = 1: max(mTmpCat(:,1))
-        vSelClus = (mTmpCat(:,2) == nCevent);
-        vSelMain = (mTmpCat(:,1) == nCevent);
-        mTmpCat2 = mTmpCat(vSelClus,:);
-        mTmpCat3 = mTmpCat(vSelMain,:);
-        %%%% Calculating time difference %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        vMinClusTime(nCevent) = min(mTmpCat2(:,5));
-        vMaxClusTime(nCevent) = max(mTmpCat2(:,5));
-        vMainTime(nCevent) = mTmpCat3(:,5); % If this does not work, then there is more than one mainshock, which doesn't make sense
-        if vMainTime(nCevent) < vMinClusTime(nCevent)
-            vMinClusTime(nCevent) = vMainTime(nCevent);
-        end % END of if-check for minimum date of cluster
-        if vMainTime(nCevent) > vMaxClusTime(nCevent)  % This should actually not happen
-            vMaxClusTime(nCevent) = vMainTime(nCevent);
-        end % END of if-check for maximum date of cluster
-        vClusTime(nCevent) = (vMaxClusTime(nCevent)-vMinClusTime(nCevent))*365;
-        %%% End of calculating time difference %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        %
-        %%% Calculate spatial extent of cluster %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        vMinClusLat(nCevent) = min(mTmpCat2(:,3));
-        vMinClusLon(nCevent) = min(mTmpCat2(:,4));
-        vMaxClusLat(nCevent) = max(mTmpCat2(:,3));
-        vMaxClusLon(nCevent) = max(mTmpCat2(:,4));
-        vMainLat(nCevent) = mTmpCat3(:,3); % If this does not work, then there is more than one mainshock, which doesn't make sense
-        vMainLon(nCevent) = mTmpCat3(:,4); % If this does not work, then there is more than one mainshock, which doesn't make sense
-        vDista(nCevent) = abs(distance(vMainLat(nCevent),vMainLon(nCevent),vMinClusLat(nCevent),vMinClusLon(nCevent)));
-        vDistb(nCevent) = abs(distance(vMainLat(nCevent),vMainLon(nCevent),vMaxClusLat(nCevent), vMaxClusLon(nCevent)));
-        if vDista(nCevent) >= vDistb(nCevent)
-            vDist(nCevent) = deg2km(vDista(nCevent));
-        else
-            vDist(nCevent) = deg2km(vDistb(nCevent));
-        end
-        %%% End of calculating spacial extend of cluster %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        vMags(nCevent) = mTmpCat3(:,8);
-    end % End of FOR over nCevent
+    clusterNumbers = reshape(unique(vmain(vmain~=0)), 1,[]);
+    
+    for nCevent = clusterNumbers
+        vSelClus = (vcluster == nCevent);
+        vSelMain = (vmain == nCevent);
+        events = mCatalog.subset(vSelClus);
+        mainshock = mCatalog.subset(vSelMain);
+        assert(length(mainshock) == 1,'There is expected to be exactly one mainshock per cluster')
+        
+        % --  Calculating time differences --
+        minClusTimes(nCevent) = min(min(events.Date), mainshock.Date); %#ok<*AGROW>
+        maxClusTimes(nCevent) = max(max(events.Date), mainshock.Date);
+        vClusTime(nCevent) = days(maxClusTimes(nCevent) - minClusTimes(nCevent));
+        
+        % -- Calculate spatial extent of cluster --
+        minClusLat = min(events.Latitude);
+        minClusLon = min(events.Longitude);
+        maxClusLat = max(events.Latitude);
+        maxClusLon = max(events.Longitude);
+        
+        % by using the RefEllipsoid, distances are returned in appropriate units
+        assert(mCatalog.RefEllipsoid.LengthUnit == "kilometer", 'Gardiner-Knopoff expects distances in KM') %TODO remove restriction and do conversions
+        % removed abs(...) because distances should always be positive. -CGR
+        
+        % get the permutations of all four corners
+        % originally, only the min,min and max,max were compared -CGR
+        lats = [minClusLat; maxClusLat; minClusLat; maxClusLat];  
+        lons = [minClusLon; minClusLon; maxClusLon; maxClusLon]; 
+        vDists = distance(mainshock.Latitude, mainshock.Longitude, lats, lons, mCatalog.RefEllipsoid);
+        vDist(nCevent) = max(vDists);
+        
+        %-- End of calculating spacial extend of cluster --
+        vMags(nCevent) = mainshock.Magnitude;
+    end
     
     % Figures
-    if exist('hd1_clus_fig','var') & ishandle(hd1_clus_fig)
+    if exist('hd1_clus_fig','var') && ishandle(hd1_clus_fig)
         set(0,'Currentfigure',hd1_clus_fig);
         disp('Figure exists');
     else
-        hd1_clus_fig=figure_w_normalized_uicontrolunits('tag','fig_clus','Name','Cluster length in time and space','Units','normalized','Nextplot','add',...
+        hd1_clus_fig = figure('tag','fig_clus','Name','Cluster length in time and space','Units','normalized','Nextplot','add',...
             'Numbertitle','off');
     end
     

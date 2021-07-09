@@ -236,30 +236,30 @@ function view_max(valueMap,gx,gy,stri,myselector)
     function create_my_menu()
         add_menu_divider();
         op1 = uimenu('Label',' Tools ');
-        uimenu(op1,'Label','ZMAP Menu',MenuSelectedField(),@callbackfun_004)
-        uimenu(op1,'Label','Plot Map in Lambert projection',MenuSelectedField(),@callbackfun_005)
-        uimenu(op1,'Label','Fix color (z) scale',MenuSelectedField(),@callbackfun_006)
-        uimenu(op1,'Label','Histogram of z-values',MenuSelectedField(),@(~,~)zhist())
-        uimenu(op1,'Label','Probability Map',MenuSelectedField(),@callbackfun_008)
-        uimenu(op1,'Label','Back to z-value Map',MenuSelectedField(),@callbackfun_009)
-        uimenu(op1,'Label','Colormap InvertGray',MenuSelectedField(),@callbackfun_010)
+        uimenu(op1,'Label','ZMAP Menu','MenuSelectedFcn',@callbackfun_004)
+        uimenu(op1,'Label','Plot Map in Lambert projection','MenuSelectedFcn',@callbackfun_005)
+        uimenu(op1,'Label','Fix color (z) scale','MenuSelectedFcn',@callbackfun_006)
+        uimenu(op1,'Label','Histogram of z-values','MenuSelectedFcn',@(~,~)zhist())
+        uimenu(op1,'Label','Probability Map','MenuSelectedFcn',@callbackfun_008)
+        uimenu(op1,'Label','Back to z-value Map','MenuSelectedFcn',@callbackfun_009)
+        uimenu(op1,'Label','Colormap InvertGray','MenuSelectedFcn',@callbackfun_010)
         uimenu(op1,'Label','Colormap Invertjet',...
-            MenuSelectedField(),@callbackfun_011)
+            'MenuSelectedFcn',@callbackfun_011)
         
-        uimenu(op1,'Label','Resolution Map',MenuSelectedField(),@callbackfun_012)
+        uimenu(op1,'Label','Resolution Map','MenuSelectedFcn',@callbackfun_012)
         uimenu(op1,'Label','Show Grid ',...
-            MenuSelectedField(),@callbackfun_013)
-        uimenu(op1,'Label','Show Circles ',MenuSelectedField(),@callbackfun_014)
-        uimenu(op1,'Label','shading flat',MenuSelectedField(),@callbackfun_015)
+            'MenuSelectedFcn',@callbackfun_013)
+        uimenu(op1,'Label','Show Circles ','MenuSelectedFcn',@callbackfun_014)
+        uimenu(op1,'Label','shading flat','MenuSelectedFcn',@callbackfun_015)
         uimenu(op1,'Label','shading interpolated',...
-            MenuSelectedField(),@callbackfun_016)
+            'MenuSelectedFcn',@callbackfun_016)
         uimenu(op1,'Label','Brigten +0.4',...
-            MenuSelectedField(),@callbackfun_017)
+            'MenuSelectedFcn',@callbackfun_017)
         uimenu(op1,'Label','Brigten -0.4',...
-            MenuSelectedField(),@callbackfun_018)
+            'MenuSelectedFcn',@callbackfun_018)
         
         uimenu(op1,'Label','Redraw Overlay',...
-            MenuSelectedField(),@callbackfun_019)
+            'MenuSelectedFcn',@callbackfun_019)
     end
     
     %% callback functions

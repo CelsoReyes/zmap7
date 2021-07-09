@@ -3,6 +3,6 @@ function addPreferencesMenuItem()
     hQuit=findall(gcf,'Label','ZMAP Preferences...');
     if isempty(hQuit)
         mainfile=findall(gcf,'Tag','figMenuFile');
-        uimenu(mainfile,'Label','ZMAP Preferences...','Separator','on',MenuSelectedField(),@(~,~)ZmapSettings);
+        uimenu(mainfile,'Label','ZMAP Preferences...','Separator','on','MenuSelectedFcn',@(~,~)ZmapSettings);
     end
 end

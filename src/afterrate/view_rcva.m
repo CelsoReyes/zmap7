@@ -192,11 +192,11 @@ myFigFinder=@() findobj('Type','Figure','-and','Name',myFigName);
         add_symbol_menu('eq_plot');
         
         options = uimenu('Label',' Analyze ');
-        uimenu(options,'Label','Refresh ',MenuSelectedField(),@callbackfun_001)
+        uimenu(options,'Label','Refresh ','MenuSelectedFcn',@callbackfun_001)
         uimenu(options,'Label','Select EQ in Circle - Constant R',...
-            MenuSelectedField(),@cb_constR)
+            'MenuSelectedFcn',@cb_constR)
         uimenu(options,'Label','Select EQ with const. number',...
-            MenuSelectedField(),@cb_constN)
+            'MenuSelectedFcn',@cb_constN)
         
         
         op1 = uimenu('Label',' Maps ');
@@ -204,46 +204,46 @@ myFigFinder=@() findobj('Type','Figure','-and','Name',myFigName);
         %Meniu for adjusting several parameters.
         adjmenu =  uimenu(op1,'Label','Adjust Map Display Parameters'),...
             uimenu(adjmenu,'Label','Adjust Mmin cut',...
-            MenuSelectedField(),@callbackfun_004)
+            'MenuSelectedFcn',@callbackfun_004)
         uimenu(adjmenu,'Label','Adjust Rmax cut',...
-            MenuSelectedField(),@callbackfun_005)
+            'MenuSelectedFcn',@callbackfun_005)
         uimenu(adjmenu,'Label','Adjust goodness of fit cut',...
-            MenuSelectedField(),@callbackfun_006)
+            'MenuSelectedFcn',@callbackfun_006)
         uimenu(adjmenu,'Label','Adjust p-value st. dev. cut',...
-            MenuSelectedField(),@callbackfun_007)
+            'MenuSelectedFcn',@callbackfun_007)
         
         
         %    uimenu(op1,'Label','b-value map (WLS)',...
-        %        MenuSelectedField(),@callbackfun_008)
+        %        'MenuSelectedFcn',@callbackfun_008)
         %    uimenu(op1,'Label','b(max likelihood) map',...
-        %        MenuSelectedField(),@callbackfun_009)
+        %        'MenuSelectedFcn',@callbackfun_009)
         %    uimenu(op1,'Label','Mag of completness map',...
-        %        MenuSelectedField(),@callbackfun_010)
+        %        'MenuSelectedFcn',@callbackfun_010)
         %    uimenu(op1,'Label','max magnitude map',...
-        %           MenuSelectedField(),@callbackfun_011)
+        %           'MenuSelectedFcn',@callbackfun_011)
         %    uimenu(op1,'Label','Magnitude range map (Mmax - Mcomp)',...
-        %           MenuSelectedField(),@callbackfun_012)
+        %           'MenuSelectedFcn',@callbackfun_012)
         %
         uimenu(op1,'Label','Relative rate change',...
-            MenuSelectedField(),@callbackfun_013)
+            'MenuSelectedFcn',@callbackfun_013)
         uimenu(op1,'Label','Relative rate change by boostrap',...
-            MenuSelectedField(),@callbackfun_014)
+            'MenuSelectedFcn',@callbackfun_014)
         uimenu(op1,'Label','Resolution Map (Number of events)',...
-            MenuSelectedField(),@callbackfun_015)
+            'MenuSelectedFcn',@callbackfun_015)
         uimenu(op1,'Label','Resolution Map (Radii)',...
-            MenuSelectedField(),@callbackfun_016)
+            'MenuSelectedFcn',@callbackfun_016)
         uimenu(op1,'Label','p-value',...
-            MenuSelectedField(),@callbackfun_017)
+            'MenuSelectedFcn',@callbackfun_017)
         uimenu(op1,'Label','p-value standard deviation',...
-            MenuSelectedField(),@callbackfun_018)
+            'MenuSelectedFcn',@callbackfun_018)
         uimenu(op1,'Label','c-value',...
-            MenuSelectedField(),@callbackfun_019)
+            'MenuSelectedFcn',@callbackfun_019)
         uimenu(op1,'Label','c-value standard deviation',...
-            MenuSelectedField(),@callbackfun_020)
+            'MenuSelectedFcn',@callbackfun_020)
         uimenu(op1,'Label','k-value',...
-            MenuSelectedField(),@callbackfun_021)
+            'MenuSelectedFcn',@callbackfun_021)
         uimenu(op1,'Label','k-value standard deviation',...
-            MenuSelectedField(),@callbackfun_022)
+            'MenuSelectedFcn',@callbackfun_022)
         
         add_display_menu(1);
     end

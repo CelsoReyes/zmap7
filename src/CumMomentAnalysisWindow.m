@@ -14,7 +14,7 @@ classdef CumMomentAnalysisWindow < AnalysisWindow
             end
             obj.ax.Title.String='Cum Moment Release';
             obj.ax.XLabel.String='time';
-            obj.ax.YLabel.String='Cumulative Moment [nm]'; %units as per calc_moment
+            obj.ax.YLabel.String='Cumulative Moment [N m]'; %units as per calc_moment
         end
         
         function [x,y]=calculate(~,catalog)

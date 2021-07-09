@@ -16,7 +16,7 @@ function fmdplot(obj, tabgrouptag)
             bAnalysisWin = AnalysisBvalues(ax,bdiffobj);
             ax.UserData = bAnalysisWin;
             % ax.UserData=bdiffobj; %stash this, but keep it with the ZMapMainWindow.
-            uimenu(ax.UIContextMenu,'Label','Cut catalog at Mc',MenuSelectedField(), @(s,v)crop_to_mc(s, v, bdiffobj) );
+            uimenu(ax.UIContextMenu,'Label','Cut catalog at Mc','MenuSelectedFcn', @(s,v)crop_to_mc(s, v, bdiffobj) );
         end
         
     elseif isempty(obj.catalog)
@@ -73,7 +73,7 @@ function fmdplot(obj, tabgrouptag)
     cxs=findobj(obj.fig,'Tag',Tags.xs);
     if isempty(cxs)
         cxs=uicontextmenu(obj.fig,'tag',Tags.xs);
-        uimenu(cxs,'Label','Open in new window',MenuSelectedField(),@cb_xstimeplot);
+        uimenu(cxs,'Label','Open in new window','MenuSelectedFcn',@cb_xstimeplot);
     end
     
     obj.plot_xsections(@xsplotter, 'Xsection fmd');

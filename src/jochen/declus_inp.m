@@ -1,4 +1,4 @@
-function [out,nMethod] = declus_inp(catalog, varargin)
+function [out, eMethod] = declus_inp(catalog, varargin)
     % declusters a catalog using window technique by Gardiner & Knopoff
     % ---------------------------------------------------------------
     % This script asks for input parameters that need to be setup
@@ -16,11 +16,31 @@ function [out,nMethod] = declus_inp(catalog, varargin)
     
     mCatalog=catalog; % Script works on mCatalog
     
-    methoddescriptions=string(enumeration('DeclusterWindowingMethods'));
-    nMethod = DeclusterWindowingMethods.GardinerKnopoff1974;  % default declusting methods
+    methoddescriptions = string(enumeration('DeclusterWindowingMethods'));
+    eMethod = DeclusterWindowingMethods.GardinerKnopoff1974;  % default declusting methods
+    idx = listdlg('ListString', string(enumeration('DeclusterWindowingMethods')),...
+        'SelectionMode', 'single', ...
+        'PromptString', 'Choose window size',...
+        'InitialValue', double(DeclusterWindowingMethods.GardinerKnopoff1974));
+    eMethod = DeclusterWindowingMethods(idx);
+    if isempty(eMethod)
+        % act as if we declustered, but found no clusters
+        disp('Declustering cancelled')
+        out = struct();
+        out.declusteredCatalog = catalog;
+        out.aftershockCatalog = catalog.subset([]);
+        out.allClusterIdx = false(catalog.Count,1);
+        out.aftershockClusterIdx = out.allClusterIdx;
+        out.mainshockClusterIdx = out.allClusterIdx;
+    else
+        out = declus_wintec(catalog, eMethod);
+    end
+        
+    
+    return
     % Make the interface
     %
-    bas_fig=figure_w_normalized_uicontrolunits(...
+    bas_fig=figure(...
         'Units','pixel','pos',[ZmapGlobal.Data.welcome_pos 400 300 ],...
         'Name','Declustering - Windowing approach',...
         'NumberTitle','off',...
@@ -49,7 +69,7 @@ function [out,nMethod] = declus_inp(catalog, varargin)
     uicontrol('Style','popup','Position',[.20 .6 .5 .1],...
         'Units','normalized',...
         'String',methoddescriptions,...
-        'Value', find(methoddescriptions==string(nMethod)),...
+        'Value', find(methoddescriptions==string(eMethod)),...
         'Callback',@cb_setmethod);
     
     % Buttons
@@ -101,7 +121,7 @@ function [out,nMethod] = declus_inp(catalog, varargin)
     
     function cb_go(~,~)
         close(findobj('tag','fig_win'));
-        declusterstuff = declus_wintec(catalog,nMethod);
+        declusterstuff = declus_wintec(catalog,eMethod);
         
     end
     
@@ -118,6 +138,6 @@ function [out,nMethod] = declus_inp(catalog, varargin)
         close
     end
     function cb_setmethod(src,~)
-        nMethod=src.Value;
+        eMethod=src.Value;
     end
 end
