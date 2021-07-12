@@ -353,6 +353,7 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
                 "datetime"      , {'%s', '[ %s  to  %s ]'}      , {show_simple, show_range};...
                 "duration"      , {'%s', '[ %s  to  %s ]'}      , {show_simple, show_range};...
                 "referenceEllipsoid" , '%s [Units:%s]'          , show_refellipse;...
+                "nonEllipsoid"  , '%s [Units:%s]'               , show_refellipse;...
                 ""              , {'%g', '[ %g  to  %g ]'}      , {show_simple, show_range}...
                 };
             
@@ -896,7 +897,7 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
             obj = ZmapCatalog();
         end
         
-        function obj = from(other)
+        function obj = from(other, varargin)
             % create a zmap catalog from something else.
             % if it is another zmap catalog, then it is copied
             if isnumeric(other)
@@ -920,8 +921,15 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
                       'attempted to create a ZmapCatalog from a table, but was instead provided a %s',class(other));
             end                          % ZMAPCATALOG(table)
             
-            other = table2zmapcatalogtable(other);
-            obj=ZmapCatalog();
+            if ismember('ReferenceEllipsoid', fieldnames(other.Properties.CustomProperties))
+                relip = other.Properties.CustomProperties.ReferenceEllipsoid;
+                lenunit = relip.LengthUnit;
+                other = table2zmapcatalogtable(other);
+                obj=ZmapCatalog('ReferenceEllipsoid', relip, 'LengthUnit',lenunit);
+            else
+                other = table2zmapcatalogtable(other);
+                obj=ZmapCatalog();
+            end
             vn = other.Properties.VariableNames;
             for i = 1:numel(vn)
                 fieldname = vn{i};

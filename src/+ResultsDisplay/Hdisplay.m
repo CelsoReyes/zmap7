@@ -732,7 +732,7 @@ classdef Hdisplay < ResultsDisplay.ZmapResultsPlugin
             for sop = shadingOptions
                 
                 uimenu(shademenu,'Label', sop,...
-                    MenuSelectedField(),@(~,~)ZmapGridFunction.cb_shading(sop));
+                    'MenuSelectedFcn',@(~,~)ZmapGridFunction.cb_shading(sop));
             end
            
             
@@ -752,7 +752,7 @@ classdef Hdisplay < ResultsDisplay.ZmapResultsPlugin
             % psave = @()theObj.Parent.save
             uimenu(lookmenu,'Separator','on',...
                 'Label','Save results',...
-                MenuSelectedField(),@save_a_result);
+                'MenuSelectedFcn',@save_a_result);
         end
     end
 end

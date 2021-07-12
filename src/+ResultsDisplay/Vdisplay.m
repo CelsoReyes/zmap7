@@ -769,7 +769,7 @@ classdef Vdisplay < ResultsDisplay.ZmapResultsPlugin
 
             uimenu(lookmenu, 'Separator', 'on',...
                 'Label', 'Save results',...
-                MenuSelectedField(),@save_a_result);
+                'MenuSelectedFcn',@save_a_result);
         end
     end
 end
