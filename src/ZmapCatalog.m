@@ -150,7 +150,11 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
                 p.addParameter('LengthUnit', obj.RefEllipsoid.LengthUnit);
                 p.parse(varargin{:});
                 obj.RefEllipsoid = p.Results.ReferenceEllipsoid;
-                obj.RefEllipsoid.LengthUnit = p.Results.LengthUnit;
+                if any(p.UsingDefaults == "LengthUnit") && ~any(p.UsingDefaults == "ReferenceEllipsoid")
+                    obj.RefEllipsoid.LengthUnit = p.Results.ReferenceEllipsoid.LengthUnit;
+                else
+                    obj.RefEllipsoid.LengthUnit = p.Results.LengthUnit;
+                end
                 obj.Name = p.Results.Name;
             end
             
@@ -658,7 +662,7 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
             %    will retrieve the specified events.
             %    this option can be used to change the order of the catalog too
             
-            newobj             = obj.blank();
+            newobj             = obj.blank(obj);
             newobj.Name        = obj.Name;
             
             if isempty(range) || ~any(range)
@@ -892,9 +896,14 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
     end
     
     methods(Static)
-        function obj = blank()  % To be implemented by every ZmapCatalog subclass
+        function obj = blank(other)  % To be implemented by every ZmapCatalog subclass
             % return a blank catalog
-            obj = ZmapCatalog();
+            if exist('other', 'var')
+                obj = ZmapCatalog('ReferenceEllipsoid', other.RefEllipsoid);
+                
+            else
+                obj = ZmapCatalog();
+            end
         end
         
         function obj = from(other, varargin)

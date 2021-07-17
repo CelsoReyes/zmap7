@@ -30,7 +30,7 @@ function myTab = findOrCreateTab(fig, look_here_containers, create_here_tabgroup
         error('unspecified container');
     end
         
-    myTab=findobj(look_here_containers, 'Title', title, '-and', 'Type', 'uitab');
+    myTab=findobj(look_here_containers, 'Type', 'uitab', '-and', 'Title', title);
     
     if isempty(myTab)
         myTab=uitab(myContainer, 'Title',title);
