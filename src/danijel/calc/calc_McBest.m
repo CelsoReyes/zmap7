@@ -9,12 +9,14 @@ function [Mc, Mc95, Mc90] = calc_McBest(magnitudes, binInterval)
     if ~exist('binInterval','var')
         binInterval = 0.1;
     end
-    magnitudes = sort(magnitudes);
+    magnitudes = sort(magnitudes); %each column sorted
     
     
     half_bin   = binInterval / 2;
+    lowest = floor(min(magnitudes,[],'all'));
+    highest = ceil(max(magnitudes,[],'all'));
     % First estimation of magnitude of completeness (maximum curvature)
-    McStarts = maxCurvature(magnitudes, [-2 : binInterval : 6] , half_bin); % vectorized
+    McStarts = maxCurvature(magnitudes, lowest : binInterval : highest , half_bin); % vectorized
     
     
     % cheat to allow this to handle multiple rows of magnitudes (independently)
