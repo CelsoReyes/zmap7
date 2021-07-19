@@ -67,8 +67,8 @@ function meandepx(catalog, dist_km)
     pl = plot(MD(:,2),MD(:,1),'sk');
     
     axis([min(d) max(d) min(z) max(z)]);
-    xlabel('Distance [km]')
-    ylabel('Depth [km]');
+    xlabel(sprintf('Distance [%s]]',catalog.LengthUnits))
+    ylabel(catalog.ZLabelWithUnits);
 end
 
 function [xstep, movew] = constnumstepdialog(xstep,movew)
