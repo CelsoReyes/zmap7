@@ -209,7 +209,6 @@ classdef ZmapGridFunction < ZmapFunction
             gph.Visible=char(obj.showgridcenters);
         end
         
-        
         function AddDialogOption(obj, zdlg, choice)
             switch choice
                 case 'NodeMinEventCount'
@@ -289,7 +288,6 @@ classdef ZmapGridFunction < ZmapFunction
             end
             %ZmapAnalysisPkg();
         end
-        
            
     end % Protected methods
     
@@ -360,6 +358,7 @@ classdef ZmapGridFunction < ZmapFunction
             ax=findobj(activeTab.Children,'Type','axes','-and','Tag','result_map');
             changecontours(ax)
         end
+
         function cb_shading(val)
             % must be in function because ax must be evaluated in real-time
             activeTab = get(findobj(gcf,'Tag','main plots'),'SelectedTab');

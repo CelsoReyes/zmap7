@@ -1,9 +1,9 @@
-function [bValue, bStdDev, aValue] =  calc_bmemag(magnitudes, binInterval, nanOption)
+function [bValue, bStdDev, aValue] =  calc_bmemag(magnitudes, binInterval)
     % a- and b-value based on the maximum likelihood estimation (with b-value's std dev)
     %
     % [ bValue, bStdDev, aValue] =  calc_bmemag(magnitudes , binInterval)
     %
-    % Calculates the mean magnitute, the b-value based
+    % Calculates the mean magnitude, the b-value based
     % on the maximum likelihood estimation, the a-value and the
     % standard deviation of the b-value
     %
@@ -39,18 +39,15 @@ function [bValue, bStdDev, aValue] =  calc_bmemag(magnitudes, binInterval, nanOp
          
     % Set the default value if not passed to the function
 
-    if ~exist('nanOption','var')
-        nanOption = 'omitnan';
-    end
     if iscolumn(magnitudes) 
-        % ok
         n = size(magnitudes,1);
     else
         n = sum(~isnan(magnitudes), 1);
     end
+    
     % Calculate the minimum and mean magnitude, length of catalog
     minMag = min(magnitudes);
-    meanMag = sum(magnitudes, nanOption) ./ n;
+    meanMag = sum(magnitudes, 'omitnan') ./ n;
     
     % Calculate the b-value (maximum likelihood)
     bValue = (1 ./ (meanMag + binInterval .* 0.5 - minMag) ) .* log10(exp(1));
@@ -59,7 +56,7 @@ function [bValue, bStdDev, aValue] =  calc_bmemag(magnitudes, binInterval, nanOp
     end
     % Calculate the standard deviation
     
-    bVariance_by_n = var(magnitudes - meanMag, nanOption) ./ n; %actual denominator becomes (n-1*n)
+    bVariance_by_n = var(magnitudes - meanMag, 'omitnan') ./ n; % actual denominator becomes (n-1*n)
     bStdDev = 2.30 .* sqrt(bVariance_by_n) .* bValue .^ 2;
     if nargout==2
         return

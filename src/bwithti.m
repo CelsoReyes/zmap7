@@ -27,7 +27,7 @@ function bwithti(mycat)
         'Automatic','Fixed Mc=Mmin','Money');
     
     
-    stride = max(round(ni .* ofac ./ 100) , 1);
+    stride = max(round(ni .* 1 - (ofac ./ 100)) , 1);
     for i = 1:stride : mycat.Count-ni
         
         b = mycat.subset(i:i+ni);

@@ -17,9 +17,9 @@ classdef ZmapData < handle
     % see ini_zmap
     
     properties(Constant)
-        zmap_version        = '7.1'
-        min_matlab_version  = '9.3' % actually 9.4
-        min_matlab_release  = '2018a'
+        zmap_version        = '7.2'
+        min_matlab_version  = '9.8' % actually 9.4
+        min_matlab_release  = '2020a'
         hodi                = fileparts(which('zmap')) % zmap home directory
         torad               = pi / 180
         Re                  = 6378.137 % semimajor Axis radius of earth, km
@@ -140,6 +140,7 @@ classdef ZmapData < handle
         
         RealTimeMode    logical     = false
         RealTimeAgent               = [];
+        LabMode         logical     = false
     end
     
     properties(Dependent)
@@ -163,6 +164,9 @@ classdef ZmapData < handle
             
             if isappdata(groot,'ZmapRealTimeMode')
                 obj.RealTimeMode = getappdata(groot, 'ZmapRealTimeMode');
+            end
+            if isappdata(groot, 'ZmapLabMode')
+                obj.LabMode = getappdata(groot, 'ZmapLabMode')
             end
             
             

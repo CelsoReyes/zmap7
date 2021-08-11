@@ -26,7 +26,7 @@ function [bv, magco, std_backg, av, pr] =  bvalca3(magnitudes, mc_auto_estimate,
     pr = nan;
     maxmag = max(magnitudes);
     mima = min( min(magnitudes) , 0);
-    if exist('mc_method','var')
+    if exist('mc_auto_estimate','var')
         mc_auto_estimate = McAutoEstimate(mc_auto_estimate);
     else
         mc_auto_estimate = McAutoEstimate.auto;

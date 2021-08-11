@@ -88,6 +88,9 @@ classdef GridOptions < handle
         function u = get.dzUnits(obj) % for backwards compatibility
             u = obj.RefEllipsoid.LengthUnit;
         end
+        %function set.dzUnits(obj, unit) % for backwards compatibility
+        %    obj.RefEllipsoid.LengthUnit = unit;
+        %end
         
     end % methods section
     

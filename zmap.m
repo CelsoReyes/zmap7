@@ -10,6 +10,7 @@ function zmap(varargin)
     %   -RT       : implement real-time mode
     %   -catalog alt_cat: use alt_cat as the prime catalog instead. It may be a variable name, a
     %               ZmapCatalog, or a value that canbe converted by ZmapCatalog
+    %   -labmode  : sets to to cartesian coordianates, and makes other assumptions about data display
     %               
     %
     % Options to be probably implemented
@@ -102,6 +103,12 @@ function zmap(varargin)
             case "-cartesian"
                 % must be set prior to acessing ZmapGlobal for the first time
                 setappdata(groot,'ZmapCoordinateSystem', CoordinateSystems.cartesian);
+                
+            case "-labmode"
+                % must be set prior to acessing ZmapGlobal for the first time                
+                msg.infodisp('Lab Mode enabled','initialization');
+                setappdata(groot,'ZmapCoordinateSystem', CoordinateSystems.cartesian);
+                setappdata(groot,'ZmapLabMode', true);
                 
                 %{ 
                 

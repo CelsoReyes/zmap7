@@ -6,18 +6,23 @@ function bwithde2(catalog)
     
     ZG = ZmapGlobal.Data; % used by get_zmap_globals
     
-    BV3 = [];
     Nmin = 50;
     zdlg = ZmapDialog();
     nEventsPerWindow = 150;
     overlap = 5;
+    fMcCorr = 0;
+    fBinning = 0.1;
     
     minMag = min(catalog.Magnitude);
     
     zdlg.AddEdit('nEventsPerWindow', 'Number of events in each window', nEventsPerWindow, 'tooltip');
     zdlg.AddEdit('overlap', 'Overlap Factor (advances 1/overlap)', overlap, 'tooltip');
-    zdlg.AddPopup('mcCalculator', 'Determine Mc using:', {'Automatic','Fixed Mc=Mmin'},1, 'tooltip',...
-        {@auto_mc, @(~)minMag });
+    zdlg.AddEdit('fMcCorr'       , 'Mc correction'      , fMcCorr       , 'correction for the magnitude of completeness');
+    zdlg.AddEdit('fBinning'      , 'Magnitude Binning'  , fBinning      , 'size of magnitude bins');
+    
+    zdlg.AddMcMethodDropdown('mc_choice');
+    %zdlg.AddPopup('mcCalculator', 'Determine Mc using:', {'Automatic','Fixed Mc=Mmin'},1, 'tooltip',...
+    %    {@auto_mc, @(~)minMag });
     
     [res, okPressed] = zdlg.Create('Name','B-value with depth parameters');
     if ~okPressed
@@ -38,18 +43,18 @@ function bwithde2(catalog)
     endIdxs = startIdxs + nEventsPerWindow - 1;
     nSteps = numel(startIdxs);
     
-    
+    BV3 = nan(nSteps,3);
     for t = 1 : nSteps
         % calculate b-value based an weighted LS
         startIdx = startIdxs(t);
         endIdx   = endIdxs(t);
         magnitudes = allMagnitudes(startIdx : endIdx);
         
-        magco = res.mcCalculator(magnitudes);
+        magco = calc_Mc(magnitudes, res.mc_choice, res.fBinning, res.fMcCorr);
         
-        l = magnitudes >= magco - 0.05;
+        l = magnitudes >= magco - res.fBinning/2;
         if sum(l) >= Nmin
-            [bv, stan, ~] = calc_bmemag(magnitudes(l), 0.1);
+            [bv, stan, ~] = calc_bmemag(magnitudes(l), res.fBinning);
         else
             [bv, stan] = deal(nan);
         end
@@ -115,15 +120,4 @@ function bwithde2(catalog)
         view(ax, [90 90])
     end
     
-end
-
-function [magco] = auto_mc(magnitudes)
-    [Mc90, Mc95] = mcperc_ca3(magnitudes);
-    if ~isnan(Mc95)
-        magco = Mc95;
-    elseif ~isnan(Mc90)
-        magco = Mc90;
-    else
-        [magco] =  bvalca3(magnitudes, McAutoEstimate.auto);
-    end
 end

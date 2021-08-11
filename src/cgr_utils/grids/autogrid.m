@@ -29,7 +29,7 @@ function [zgrid, gpc] = autogrid(catalog, refEllipsoid, axes_h)
     if iscartesian(refEllipsoid)
         dS = round(cartesian_line_length(catalog) / 30, 2);
         gpc = GridOptions('XY',[dS, dS], refEllipsoid, 'gridEntireArea', true);
-        gpc.dzUnits = catalog.LengthUnit;
+        %gpc.dzUnits = catalog.LengthUnit;
         gpc.FixedAnchorPoint = [0 0 0];
         gpc.AbsoluteGridLimits = [bounds2(catalog.X), bounds2(catalog.Y)];
         zgrid = ZmapGrid('autogrid', 'FromGridOptions', gpc);
