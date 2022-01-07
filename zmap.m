@@ -32,7 +32,7 @@ function zmap(varargin)
     %  - added ability to import catalogs from FDSN web services.
     %  - global variables have been minimized. Data sharing occurs through one class.
     %  - only result variables should appear in the base workspace.
-    %  - requires minimum of matlab v 2018a,
+    %  - requires minimum of matlab v 2020a,
     %
     %
     %  see README.md and the help for individual parts of ZMAP for other change details
